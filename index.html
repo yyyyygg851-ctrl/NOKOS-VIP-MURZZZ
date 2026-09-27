@@ -1,0 +1,2230 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07020d">
+<title>MURZZ STORE — NOKOS</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07020d;
+--card:#12091c;
+--card2:#1b0d29;
+--p:#b84cff;
+--p2:#7b20ff;
+--p3:#e6b7ff;
+--txt:#fbf4ff;
+--muted:#a58aae;
+--line:rgba(184,76,255,.23);
+--green:#9cffc8;
+--red:#ff9fbd;
+}
+html{scroll-behavior:smooth}
+body{
+min-height:100vh;
+color:var(--txt);
+font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:
+radial-gradient(circle at 10% 10%,rgba(123,32,255,.2),transparent 30%),
+radial-gradient(circle at 90% 20%,rgba(184,76,255,.13),transparent 32%),
+var(--bg);
+overflow-x:hidden;
+}
+body:before{
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+opacity:.12;
+background-image:
+linear-gradient(rgba(184,76,255,.18) 1px,transparent 1px),
+linear-gradient(90deg,rgba(184,76,255,.18) 1px,transparent 1px);
+background-size:40px 40px;
+mask-image:linear-gradient(to bottom,#000,transparent);
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+#fx{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:0;
+}
+
+/* LOADER */
+.loader{
+position:fixed;
+inset:0;
+z-index:99999;
+display:grid;
+place-items:center;
+background:#040107;
+transition:.7s ease;
+}
+.loader.hide{
+opacity:0;
+visibility:hidden;
+pointer-events:none;
+}
+.loaderIn{
+width:min(86%,340px);
+text-align:center;
+animation:loaderIn .7s ease both;
+}
+.loaderLogo{
+font-size:34px;
+font-weight:950;
+letter-spacing:4px;
+text-shadow:0 0 10px var(--p),0 0 30px rgba(184,76,255,.65);
+}
+.loaderText{
+margin-top:10px;
+color:var(--muted);
+font-size:10px;
+letter-spacing:3px;
+}
+.loaderBar{
+height:4px;
+margin-top:23px;
+overflow:hidden;
+border-radius:99px;
+background:#1b0b27;
+box-shadow:0 0 20px rgba(184,76,255,.12);
+}
+.loaderBar:after{
+content:"";
+display:block;
+width:45%;
+height:100%;
+background:linear-gradient(90deg,var(--p2),var(--p3),var(--p));
+box-shadow:0 0 15px var(--p);
+animation:loaderLoad 1.3s infinite;
+}
+@keyframes loaderIn{
+from{opacity:0;transform:scale(.9) translateY(15px)}
+to{opacity:1;transform:none}
+}
+@keyframes loaderLoad{
+from{transform:translateX(-130%)}
+to{transform:translateX(300%)}
+}
+
+/* MAIN */
+.wrap{
+position:relative;
+z-index:2;
+width:min(calc(100% - 18px),610px);
+margin:auto;
+padding:20px 0 50px;
+}
+.brand{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:15px;
+}
+.logo{
+font-size:22px;
+font-weight:950;
+letter-spacing:.5px;
+}
+.dev{
+font-size:9px;
+color:var(--muted);
+letter-spacing:1px;
+}
+.page{display:none}
+.page.active{
+display:block;
+animation:pageIn .45s ease both;
+}
+@keyframes pageIn{
+from{opacity:0;transform:translateY(14px)}
+to{opacity:1;transform:none}
+}
+
+.card{
+border:1px solid var(--line);
+border-radius:22px;
+padding:18px;
+background:linear-gradient(145deg,rgba(18,9,28,.97),rgba(10,4,16,.97));
+box-shadow:
+0 20px 70px rgba(0,0,0,.38),
+inset 0 0 30px rgba(184,76,255,.025);
+backdrop-filter:blur(12px);
+}
+.badge{
+display:inline-flex;
+align-items:center;
+gap:7px;
+padding:7px 10px;
+border:1px solid var(--line);
+border-radius:999px;
+background:rgba(184,76,255,.06);
+color:var(--p3);
+font-size:9px;
+font-weight:900;
+letter-spacing:1px;
+}
+.dot{
+width:7px;
+height:7px;
+border-radius:50%;
+background:var(--green);
+box-shadow:0 0 12px var(--green);
+animation:dotPulse 1.5s infinite;
+}
+@keyframes dotPulse{
+50%{transform:scale(1.35);opacity:.65}
+}
+h1{
+margin-top:15px;
+font-size:30px;
+line-height:1.05;
+}
+.sub{
+margin-top:10px;
+color:var(--muted);
+font-size:13px;
+line-height:1.6;
+}
+
+/* VIDEO */
+.videoWrap{
+position:relative;
+overflow:hidden;
+margin-top:18px;
+border:1px solid var(--line);
+border-radius:18px;
+background:#030106;
+box-shadow:0 0 35px rgba(184,76,255,.08);
+}
+.videoWrap video{
+display:block;
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+background:#030106;
+}
+.videoScan{
+position:absolute;
+inset:0;
+pointer-events:none;
+background:linear-gradient(to bottom,transparent,rgba(184,76,255,.08),transparent);
+background-size:100% 180%;
+animation:videoScan 4s linear infinite;
+}
+@keyframes videoScan{
+from{background-position:0 -100%}
+to{background-position:0 200%}
+}
+
+/* INPUT */
+.price{
+margin-top:18px;
+font-size:31px;
+font-weight:950;
+text-shadow:0 0 20px rgba(184,76,255,.35);
+}
+.label{
+display:block;
+margin:16px 0 7px;
+color:var(--muted);
+font-size:10px;
+font-weight:900;
+}
+.input,
+.search,
+.select,
+.chatInput{
+width:100%;
+outline:none;
+border:1px solid var(--line);
+border-radius:13px;
+padding:13px 14px;
+color:#fff;
+background:#0b0412;
+transition:border-color .25s,box-shadow .25s,transform .25s,background .25s;
+}
+.input:focus,
+.search:focus,
+.select:focus,
+.chatInput:focus{
+transform:translateY(-2px);
+border-color:rgba(184,76,255,.75);
+background:#0b0412;
+box-shadow:
+0 0 0 3px rgba(184,76,255,.05),
+0 0 25px rgba(184,76,255,.18);
+}
+.btn{
+width:100%;
+margin-top:10px;
+padding:13px;
+border:1px solid var(--line);
+border-radius:13px;
+color:#fff;
+background:#11071a;
+font-weight:950;
+transition:.2s;
+}
+.btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(184,76,255,.1);
+}
+.btn:active{transform:scale(.98)}
+.primary{
+border-color:transparent;
+background:linear-gradient(135deg,#7b20ff,#b84cff);
+box-shadow:0 0 25px rgba(123,32,255,.2);
+}
+
+/* NOKOS */
+.top{margin-bottom:15px}
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-bottom:12px;
+}
+.stat{
+padding:13px 8px;
+text-align:center;
+border:1px solid var(--line);
+border-radius:15px;
+background:#12091c;
+transition:.25s;
+}
+.stat:hover{
+transform:translateY(-3px);
+border-color:rgba(184,76,255,.5);
+box-shadow:0 10px 30px rgba(184,76,255,.08);
+}
+.stat b{
+display:block;
+font-size:17px;
+}
+.stat span{
+font-size:9px;
+color:var(--muted);
+}
+
+.toolbar{
+display:grid;
+grid-template-columns:1fr 145px;
+gap:8px;
+margin-bottom:13px;
+}
+.search.searching{animation:searchPulse .45s ease}
+@keyframes searchPulse{
+50%{
+box-shadow:
+0 0 0 4px rgba(184,76,255,.07),
+0 0 28px rgba(184,76,255,.25);
+}
+}
+.select.filtering{animation:filterPulse .4s ease}
+@keyframes filterPulse{
+50%{
+transform:scale(1.035);
+box-shadow:0 0 25px rgba(184,76,255,.22);
+}
+}
+
+.grid{display:grid;gap:9px}
+.grid.searchRefresh{animation:gridRefresh .32s ease}
+@keyframes gridRefresh{
+from{opacity:.35;transform:translateY(7px);filter:blur(2px)}
+to{opacity:1;transform:none;filter:none}
+}
+
+.item{
+border:1px solid var(--line);
+border-radius:16px;
+padding:13px;
+background:linear-gradient(145deg,#0f0617,#0b0411);
+transition:.25s;
+}
+.item:hover{
+transform:translateY(-3px);
+border-color:rgba(184,76,255,.45);
+box-shadow:0 12px 35px rgba(184,76,255,.08);
+}
+.item.searchResult{
+animation:searchItemIn .42s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes searchItemIn{
+from{opacity:0;transform:translateY(14px) scale(.96)}
+to{opacity:1;transform:none}
+}
+.country{
+color:var(--p3);
+font-size:10px;
+font-weight:950;
+}
+.numRow{
+display:flex;
+align-items:center;
+gap:8px;
+min-width:0;
+margin-top:5px;
+}
+.num{
+min-width:0;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+font-size:16px;
+font-weight:850;
+}
+.miniCode{
+display:none;
+flex-shrink:0;
+padding:4px 7px;
+border:1px solid rgba(184,76,255,.4);
+border-radius:7px;
+background:rgba(184,76,255,.08);
+color:var(--p3);
+font-size:8px;
+font-weight:950;
+letter-spacing:1px;
+}
+.miniCode.show{
+display:block;
+animation:miniCodeIn .3s ease both;
+}
+@keyframes miniCodeIn{
+from{opacity:0;transform:scale(.7) translateX(-5px)}
+to{opacity:1;transform:none}
+}
+.available{
+margin-top:5px;
+color:var(--green);
+font-size:9px;
+}
+.copy{
+width:100%;
+margin-top:10px;
+padding:9px;
+border:1px solid var(--line);
+border-radius:10px;
+background:#15091f;
+color:#fff;
+font-size:10px;
+font-weight:950;
+transition:.2s;
+}
+.copy:hover{
+border-color:rgba(184,76,255,.6);
+box-shadow:0 0 18px rgba(184,76,255,.12);
+}
+.copy:active{transform:scale(.97)}
+.empty{
+padding:25px;
+text-align:center;
+border:1px dashed var(--line);
+border-radius:15px;
+color:var(--muted);
+animation:emptySearch .4s ease both;
+}
+@keyframes emptySearch{
+from{opacity:0;transform:scale(.96)}
+to{opacity:1;transform:none}
+}
+
+/* SASUKE */
+.sasukeBanner{
+position:relative;
+width:100%;
+aspect-ratio:3.2/1;
+margin-bottom:15px;
+overflow:hidden;
+border:1px solid var(--line);
+border-radius:20px;
+background:#09030f;
+box-shadow:
+0 0 30px rgba(184,76,255,.15),
+inset 0 0 25px rgba(184,76,255,.08);
+animation:sasukeIn .7s ease both;
+}
+.sasukeBanner:after{
+content:"";
+position:absolute;
+inset:0;
+pointer-events:none;
+background:linear-gradient(
+110deg,
+transparent 20%,
+rgba(255,255,255,.1),
+transparent 45%
+);
+transform:translateX(-120%);
+animation:sasukeShine 5s ease-in-out infinite;
+}
+.sasukeBanner img{
+width:100%;
+height:100%;
+display:block;
+object-fit:cover;
+}
+@keyframes sasukeIn{
+from{opacity:0;transform:translateY(12px) scale(.97)}
+to{opacity:1;transform:none}
+}
+@keyframes sasukeShine{
+50%,100%{transform:translateX(120%)}
+}
+
+/* CHAT FLOAT */
+.chatFloat{
+position:fixed;
+right:18px;
+bottom:18px;
+z-index:5000;
+width:58px;
+height:58px;
+border:1px solid rgba(184,76,255,.65);
+border-radius:50%;
+display:grid;
+place-items:center;
+background:radial-gradient(
+circle at 35% 30%,
+#d88aff,
+#7b20ff 55%,
+#250044
+);
+color:#fff;
+box-shadow:
+0 0 18px rgba(184,76,255,.55),
+0 0 45px rgba(123,32,255,.25);
+transition:.25s;
+animation:chatFloat 2.4s ease-in-out infinite;
+}
+.chatFloat:hover{
+transform:scale(1.08);
+box-shadow:
+0 0 25px rgba(184,76,255,.75),
+0 0 60px rgba(123,32,255,.35);
+}
+.chatFloat:active{transform:scale(.9)}
+.chatFloatIcon{
+width:25px;
+height:20px;
+border:2px solid #fff;
+border-radius:9px;
+position:relative;
+box-shadow:0 0 10px rgba(255,255,255,.35);
+}
+.chatFloatIcon:after{
+content:"";
+position:absolute;
+left:3px;
+bottom:-6px;
+width:7px;
+height:7px;
+border-left:2px solid #fff;
+transform:skew(-25deg);
+}
+@keyframes chatFloat{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-5px)}
+}
+
+/* MODAL */
+.modal{
+position:fixed;
+inset:0;
+z-index:9000;
+display:none;
+place-items:center;
+padding:18px;
+background:rgba(2,0,5,.78);
+backdrop-filter:blur(9px);
+}
+.modal.show{
+display:grid;
+animation:modalBg .25s ease;
+}
+@keyframes modalBg{
+from{opacity:0}
+to{opacity:1}
+}
+.modalBox{
+width:min(100%,430px);
+padding:18px;
+border:1px solid var(--line);
+border-radius:20px;
+background:linear-gradient(145deg,#13081d,#0a0410);
+box-shadow:
+0 25px 80px rgba(0,0,0,.6),
+0 0 50px rgba(184,76,255,.08);
+animation:modalBoxIn .3s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes modalBoxIn{
+from{opacity:0;transform:translateY(20px) scale(.94)}
+to{opacity:1;transform:none}
+}
+
+/* CHAT */
+.globalChatBox{
+max-height:calc(100vh - 40px);
+display:flex;
+flex-direction:column;
+}
+.chatHead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+}
+.chatTitle{
+font-size:19px;
+font-weight:950;
+}
+.online{
+margin-top:2px;
+font-size:9px;
+color:var(--green);
+font-weight:900;
+letter-spacing:1px;
+}
+.chatMessages{
+height:min(52vh,360px);
+min-height:220px;
+overflow-y:auto;
+padding:4px 2px 8px;
+scroll-behavior:smooth;
+}
+.chatMessages::-webkit-scrollbar{width:4px}
+.chatMessages::-webkit-scrollbar-thumb{
+background:#56206e;
+border-radius:99px;
+}
+.chatLoading{
+padding:30px;
+text-align:center;
+color:var(--muted);
+font-size:10px;
+}
+.chatEmpty{
+height:100%;
+display:grid;
+place-items:center;
+text-align:center;
+color:var(--muted);
+font-size:11px;
+}
+.msg{
+padding:10px;
+margin-bottom:8px;
+border:1px solid var(--line);
+border-radius:14px;
+background:#0c0513;
+animation:msgIn .3s ease;
+}
+.msg.new{
+box-shadow:
+0 0 0 1px rgba(184,76,255,.15),
+0 0 22px rgba(184,76,255,.13);
+}
+@keyframes msgIn{
+from{opacity:0;transform:translateY(8px) scale(.98)}
+to{opacity:1;transform:none}
+}
+.msgTop{
+display:flex;
+justify-content:space-between;
+gap:10px;
+margin-bottom:5px;
+}
+.msgName{
+color:var(--p3);
+font-size:11px;
+font-weight:950;
+}
+.msgTime{
+color:#765d80;
+font-size:8px;
+}
+.msgText{
+font-size:12px;
+line-height:1.5;
+overflow-wrap:anywhere;
+}
+.chatInputs{
+display:grid;
+gap:8px;
+margin-top:10px;
+}
+.chatRow{
+display:grid;
+grid-template-columns:1fr 90px;
+gap:8px;
+}
+.chatSend{
+border:0;
+border-radius:12px;
+color:#fff;
+background:linear-gradient(135deg,#7b20ff,#b84cff);
+font-weight:950;
+transition:.2s;
+}
+.chatSend:hover{
+box-shadow:0 0 22px rgba(184,76,255,.25);
+transform:translateY(-1px);
+}
+.chatSend:active{transform:scale(.97)}
+.chatSend:disabled{
+opacity:.55;
+cursor:wait;
+}
+.chatCount{
+text-align:right;
+color:#765d80;
+font-size:8px;
+}
+.chatError{
+min-height:14px;
+color:var(--red);
+font-size:9px;
+line-height:1.5;
+}
+
+/* TOAST */
+.toast{
+position:fixed;
+left:50%;
+bottom:22px;
+z-index:10000;
+transform:translate(-50%,20px) scale(.95);
+opacity:0;
+pointer-events:none;
+padding:11px 14px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#10071a;
+color:#fff;
+font-size:10px;
+box-shadow:0 10px 35px rgba(0,0,0,.4);
+transition:.3s;
+}
+.toast.show{
+opacity:1;
+transform:translate(-50%,0) scale(1);
+}
+
+.shake{animation:shake .3s}
+@keyframes shake{
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-4px)}
+}
+
+footer{
+text-align:center;
+margin-top:18px;
+color:#664d70;
+font-size:9px;
+}
+
+@media(max-width:600px){
+.toolbar{grid-template-columns:1fr}
+.chatFloat{
+right:14px;
+bottom:14px;
+width:55px;
+height:55px;
+}
+.chatRow{
+grid-template-columns:1fr 82px;
+}
+h1{font-size:27px}
+}
+
+@media(prefers-reduced-motion:reduce){
+*{
+animation-duration:.001ms!important;
+animation-iteration-count:1!important;
+scroll-behavior:auto!important;
+transition:none!important;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader" id="loader">
+<div class="loaderIn">
+<div class="loaderLogo">MURZZ STORE</div>
+<div class="loaderText">SECURE NOKOS ACCESS</div>
+<div class="loaderBar"></div>
+</div>
+</div>
+
+<canvas id="fx"></canvas>
+
+<main class="wrap">
+
+<div class="brand">
+<div class="logo">MURZZ STORE</div>
+<div class="dev">NOKOS SYSTEM</div>
+</div>
+
+<section class="page active" id="loginPage">
+
+<div class="card">
+
+<span class="badge">
+<i class="dot"></i>
+SECURE ACCESS
+</span>
+
+<h1>Unlock MURZZ STORE</h1>
+
+<div class="sub">
+Masukkan Access Key untuk membuka katalog NOKOS.
+Akses video tersedia langsung dari halaman.
+</div>
+
+<div class="videoWrap">
+
+<video
+id="localVideo"
+controls
+autoplay
+muted
+loop
+playsinline
+preload="auto"
+>
+<source src="video.mp4" type="video/mp4">
+Browser kamu tidak mendukung pemutar video.
+</video>
+
+<div class="videoScan"></div>
+
+</div>
+
+<div class="price">Rp5.000</div>
+
+<label class="label">ACCESS KEY</label>
+
+<input
+id="accessKey"
+class="input"
+placeholder="Masukkan Access Key..."
+autocomplete="off"
+>
+
+<button class="btn primary" id="loginBtn">
+LOGIN DENGAN KEY
+</button>
+
+<button class="btn" id="buyBtn">
+BELI KEY Rp5.000
+</button>
+
+</div>
+</section>
+
+<section class="page" id="nokaPage">
+
+<div class="top">
+
+<span class="badge">
+<i class="dot"></i>
+<span id="roleBadge">UNLOCKED</span>
+</span>
+
+</div>
+
+<div class="sasukeBanner">
+<img src="sasuke.jpg" alt="Sasuke">
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<b id="totalStat">0</b>
+<span>TOTAL DATA</span>
+</div>
+
+<div class="stat">
+<b id="stockStat">0</b>
+<span>TERSEDIA</span>
+</div>
+
+<div class="stat">
+<b id="countryStat">0</b>
+<span>NEGARA</span>
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="toolbar">
+
+<input
+id="search"
+class="search"
+placeholder="Cari negara / nomor..."
+autocomplete="off"
+>
+
+<select id="countryFilter" class="select">
+<option value="">Semua negara</option>
+</select>
+
+</div>
+
+<div id="numberGrid" class="grid"></div>
+
+</div>
+
+<button class="btn" id="infoBtn">
+INFO AKSES
+</button>
+
+<button class="btn" id="logoutBtn">
+KELUAR
+</button>
+
+</section>
+
+<footer>
+MURZZ STORE — NOKOS SYSTEM
+</footer>
+
+</main>
+
+<button
+class="chatFloat"
+id="chatFloat"
+aria-label="Buka Chat Global"
+>
+<span class="chatFloatIcon"></span>
+</button>
+
+<div class="modal" id="globalChatModal">
+
+<div class="modalBox globalChatBox">
+
+<div class="chatHead">
+
+<div>
+<div class="chatTitle">Chat Global</div>
+<div class="online">GLOBAL ONLINE</div>
+</div>
+
+<button
+class="copy"
+style="width:auto;margin:0"
+id="closeChatBtn"
+>
+TUTUP
+</button>
+
+</div>
+
+<div id="chatMessages" class="chatMessages">
+<div class="chatLoading">Memuat chat...</div>
+</div>
+
+<div class="chatInputs">
+
+<input
+id="chatName"
+class="chatInput"
+maxlength="24"
+placeholder="Nama pengguna..."
+autocomplete="off"
+>
+
+<div class="chatRow">
+
+<input
+id="chatMessage"
+class="chatInput"
+maxlength="500"
+placeholder="Tulis pesan..."
+autocomplete="off"
+>
+
+<button class="chatSend" id="chatSend">
+KIRIM
+</button>
+
+</div>
+
+<div class="chatCount">
+<span id="chatCount">0</span>/500
+</div>
+
+<div id="chatError" class="chatError"></div>
+
+</div>
+
+</div>
+</div>
+
+<div class="modal" id="infoModal">
+
+<div class="modalBox">
+
+<h2>INFO AKSES</h2>
+
+<p style="margin-top:9px;color:var(--muted);font-size:11px;line-height:1.6">
+Data nomor pada katalog merupakan data katalog/sample.
+</p>
+
+<button class="btn primary" id="closeInfoBtn">
+TUTUP
+</button>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ==========================================
+HELPER
+========================================== */
+
+function $(id){
+return document.getElementById(id);
+}
+
+function escapeHTML(value){
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function toast(text){
+const el=$("toast");
+if(!el)return;
+
+el.textContent=text;
+el.classList.add("show");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(function(){
+el.classList.remove("show");
+},2200);
+}
+
+function showPage(id){
+document.querySelectorAll(".page").forEach(function(page){
+page.classList.remove("active");
+});
+
+const page=$(id);
+
+if(page){
+page.classList.add("active");
+}
+}
+
+/* ==========================================
+SUPABASE SAFE INIT
+========================================== */
+
+const SUPABASE_URL=
+"https://okbizarcxaqhcppvyxrc.supabase.co";
+
+const SUPABASE_KEY=
+"sb_publishable_RnFH4gO8PTDOsaMSHDkmMw_4hv7-e7A";
+
+let supabaseClient=null;
+
+try{
+
+if(
+window.supabase &&
+typeof window.supabase.createClient==="function"
+){
+
+supabaseClient=
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+}
+
+}catch(error){
+
+console.error(
+"Supabase initialization error:",
+error
+);
+
+supabaseClient=null;
+
+}
+
+/* ==========================================
+ACCESS KEY
+========================================== */
+
+const OWNER_KEY="MZ-OWNR-7X9Q-V4KP";
+const USER_KEY="MZ-USER-3N8X-Q7LM";
+
+function loginKey(){
+
+const input=$("accessKey");
+
+if(!input)return;
+
+const key=input.value.trim();
+
+if(key===OWNER_KEY){
+
+localStorage.setItem("murzzRole","OWNER");
+
+$("roleBadge").textContent="OWNER";
+
+openNoka();
+
+toast("Owner berhasil masuk");
+
+return;
+
+}
+
+if(key===USER_KEY){
+
+localStorage.setItem("murzzRole","USER");
+
+$("roleBadge").textContent="USER";
+
+openNoka();
+
+toast("Access Key valid");
+
+return;
+
+}
+
+input.classList.remove("shake");
+
+void input.offsetWidth;
+
+input.classList.add("shake");
+
+toast("Access Key tidak valid");
+
+}
+
+function openNoka(){
+
+showPage("nokaPage");
+
+fillCountries();
+renderNumbers();
+
+}
+
+function logoutKey(){
+
+localStorage.removeItem("murzzRole");
+
+showPage("loginPage");
+
+$("accessKey").value="";
+
+toast("Kamu sudah keluar");
+
+}
+
+function openBuy(){
+
+window.open(
+"https://www.tiktok.com/@fary7585?_r=1&_t=ZS-9A4GU2ptOvi",
+"_blank"
+);
+
+}
+
+/* ==========================================
+DATA
+========================================== */
+
+const numbers=[];
+
+[
+["Indonesia","+628123456789"],
+["Indonesia","+628987654321"],
+["Malaysia","+60123456789"],
+["Singapore","+6581234567"],
+["Thailand","+66812345678"]
+].forEach(function(item){
+numbers.push(item);
+});
+
+for(let i=1;i<=3500;i++){
+
+numbers.push([
+"Indonesia",
+"+6289900"+String(i).padStart(4,"0")
+]);
+
+}
+
+for(let i=1;i<=3500;i++){
+
+numbers.push([
+"Malaysia",
+"+6019900"+String(i).padStart(4,"0")
+]);
+
+}
+
+for(let i=1;i<=800;i++){
+
+numbers.push([
+"Indonesia",
+"+6287700"+String(i).padStart(4,"0")
+]);
+
+}
+
+/* ==========================================
+COUNTRY
+========================================== */
+
+function fillCountries(){
+
+const select=$("countryFilter");
+
+if(!select)return;
+
+const countries=
+Array.from(
+new Set(
+numbers.map(function(item){
+return item[0];
+})
+)
+).sort();
+
+select.innerHTML=
+'<option value="">Semua negara</option>'+
+countries.map(function(country){
+
+return '<option value="'+
+escapeHTML(country)+
+'">'+
+escapeHTML(country)+
+'</option>';
+
+}).join("");
+
+}
+
+/* ==========================================
+RENDER
+========================================== */
+
+function renderNumbers(){
+
+const grid=$("numberGrid");
+
+if(!grid)return;
+
+const query=
+$("search").value
+.toLowerCase()
+.trim();
+
+const country=
+$("countryFilter").value;
+
+const filtered=
+numbers.filter(function(item){
+
+const countryMatch=
+!country||item[0]===country;
+
+const searchMatch=
+!query||
+item[0].toLowerCase().indexOf(query)!==-1||
+item[1].indexOf(query)!==-1;
+
+return countryMatch&&searchMatch;
+
+});
+
+$("totalStat").textContent=
+numbers.length.toLocaleString("id-ID");
+
+$("stockStat").textContent=
+numbers.length.toLocaleString("id-ID");
+
+$("countryStat").textContent=
+new Set(
+numbers.map(function(item){
+return item[0];
+})
+).size;
+
+if(!filtered.length){
+
+grid.innerHTML=
+'<div class="empty">Data tidak ditemukan.</div>';
+
+return;
+
+}
+
+grid.classList.remove("searchRefresh");
+
+void grid.offsetWidth;
+
+grid.classList.add("searchRefresh");
+
+grid.innerHTML=
+filtered.slice(0,100).map(function(item,index){
+
+return `
+<article
+class="item searchResult"
+style="animation-delay:${Math.min(index*12,300)}ms"
+>
+<div class="country">
+${escapeHTML(item[0])}
+</div>
+
+<div class="numRow">
+
+<div class="num">
+${escapeHTML(item[1])}
+</div>
+
+<div
+class="miniCode"
+id="code-${index}"
+></div>
+
+</div>
+
+<div class="available">
+TERSEDIA
+</div>
+
+<button
+class="copy"
+data-number="${escapeHTML(item[1])}"
+data-index="${index}"
+>
+SALIN NOMOR
+</button>
+
+</article>
+`;
+
+}).join("");
+
+grid.querySelectorAll(".copy[data-number]").forEach(function(button){
+
+button.addEventListener("click",function(){
+
+copyNumber(
+button.getAttribute("data-number"),
+Number(button.getAttribute("data-index"))
+);
+
+});
+
+});
+
+}
+
+/* ==========================================
+COPY
+========================================== */
+
+async function copyNumber(number,index){
+
+let copied=false;
+
+try{
+
+if(
+navigator.clipboard &&
+window.isSecureContext
+){
+
+await navigator.clipboard.writeText(number);
+
+copied=true;
+
+}else{
+
+const textarea=
+document.createElement("textarea");
+
+textarea.value=number;
+
+textarea.style.position="fixed";
+textarea.style.left="-9999px";
+textarea.style.top="0";
+textarea.style.opacity="0";
+
+document.body.appendChild(textarea);
+
+textarea.focus();
+textarea.select();
+
+copied=document.execCommand("copy");
+
+textarea.remove();
+
+}
+
+}catch(error){
+
+console.error("COPY ERROR:",error);
+
+}
+
+const code=
+String(
+Math.floor(
+100000+
+Math.random()*900000
+)
+);
+
+const codeEl=$("code-"+index);
+
+if(codeEl){
+
+codeEl.textContent=code;
+
+codeEl.classList.remove("show");
+
+void codeEl.offsetWidth;
+
+codeEl.classList.add("show");
+
+}
+
+toast(
+copied
+?"Nomor berhasil disalin."
+:"Kode dibuat. Salin nomor secara manual."
+);
+
+}
+
+/* ==========================================
+SEARCH
+========================================== */
+
+let searchTimer=null;
+
+$("search").addEventListener(
+"input",
+function(){
+
+const searchBox=$("search");
+
+searchBox.classList.remove("searching");
+
+void searchBox.offsetWidth;
+
+searchBox.classList.add("searching");
+
+clearTimeout(searchTimer);
+
+searchTimer=setTimeout(
+renderNumbers,
+90
+);
+
+}
+);
+
+$("countryFilter").addEventListener(
+"change",
+function(){
+
+const filter=$("countryFilter");
+
+filter.classList.remove("filtering");
+
+void filter.offsetWidth;
+
+filter.classList.add("filtering");
+
+renderNumbers();
+
+}
+);
+
+/* ==========================================
+INFO
+========================================== */
+
+function openInfo(){
+$("infoModal").classList.add("show");
+}
+
+function closeInfo(){
+$("infoModal").classList.remove("show");
+}
+
+/* ==========================================
+GLOBAL CHAT
+========================================== */
+
+let chatChannel=null;
+let lastChatSent=0;
+
+const URL_RE=
+/(https?:\/\/|www\.|t\.me\/|wa\.me\/|discord\.gg\/|telegram\.me\/)/i;
+
+const SPAM_RE=
+/(.)\1{8,}/i;
+
+function openGlobalChat(){
+
+$("globalChatModal").classList.add("show");
+
+const savedName=
+localStorage.getItem("murzzChatName");
+
+if(savedName){
+$("chatName").value=savedName;
+}
+
+loadChat();
+
+subscribeChat();
+
+setTimeout(function(){
+$("chatMessage").focus();
+},200);
+
+}
+
+function closeGlobalChat(){
+
+$("globalChatModal").classList.remove("show");
+
+}
+
+function setChatError(message){
+
+$("chatError").textContent=
+message||"";
+
+}
+
+function moderateChat(name,message){
+
+name=name.trim();
+message=message.trim();
+
+if(name.length<2)
+return"Nama minimal 2 karakter.";
+
+if(name.length>24)
+return"Nama maksimal 24 karakter.";
+
+if(!message)
+return"Pesan tidak boleh kosong.";
+
+if(message.length>500)
+return"Pesan maksimal 500 karakter.";
+
+if(URL_RE.test(message))
+return"Link tidak diizinkan di chat.";
+
+if(URL_RE.test(name))
+return"Nama tidak boleh berisi link.";
+
+if(SPAM_RE.test(message))
+return"Pesan terdeteksi sebagai spam.";
+
+const now=Date.now();
+
+if(now-lastChatSent<2500)
+return"Tunggu beberapa detik sebelum mengirim lagi.";
+
+return"";
+
+}
+
+function formatTime(date){
+
+try{
+
+return new Intl.DateTimeFormat(
+"id-ID",
+{
+day:"2-digit",
+month:"2-digit",
+hour:"2-digit",
+minute:"2-digit"
+}
+).format(new Date(date));
+
+}catch(error){
+
+return"--:--";
+
+}
+
+}
+
+function renderChatMessage(row,isNew){
+
+const box=$("chatMessages");
+
+if(!box)return;
+
+const empty=
+box.querySelector(".chatEmpty");
+
+if(empty){
+empty.remove();
+}
+
+const id=
+String(row.id||(
+Date.now()+"-"+Math.random()
+));
+
+const existing=
+Array.from(box.children).some(function(el){
+return el.dataset.chatId===id;
+});
+
+if(existing)return;
+
+const message=
+document.createElement("div");
+
+message.className=
+"msg"+(isNew?" new":"");
+
+message.dataset.chatId=id;
+
+const top=
+document.createElement("div");
+
+top.className="msgTop";
+
+const name=
+document.createElement("div");
+
+name.className="msgName";
+name.textContent=row.name||"User";
+
+const time=
+document.createElement("div");
+
+time.className="msgTime";
+time.textContent=
+formatTime(row.created_at||Date.now());
+
+top.appendChild(name);
+top.appendChild(time);
+
+const text=
+document.createElement("div");
+
+text.className="msgText";
+text.textContent=row.message||"";
+
+message.appendChild(top);
+message.appendChild(text);
+
+box.appendChild(message);
+
+while(box.children.length>100){
+box.removeChild(box.firstElementChild);
+}
+
+box.scrollTo({
+top:box.scrollHeight,
+behavior:"smooth"
+});
+
+}
+
+/* ==========================================
+LOAD CHAT
+========================================== */
+
+async function loadChat(){
+
+const box=$("chatMessages");
+
+if(!box)return;
+
+if(!supabaseClient){
+
+box.innerHTML=
+'<div class="chatEmpty">'+
+'Chat sementara tidak tersedia.<br><br>'+
+'Koneksi database belum siap.'+
+'</div>';
+
+return;
+
+}
+
+box.innerHTML=
+'<div class="chatLoading">Memuat chat...</div>';
+
+try{
+
+const result=
+await supabaseClient
+.from("global_chat")
+.select("id,name,message,created_at")
+.order("created_at",{ascending:true})
+.limit(100);
+
+if(result.error){
+
+console.error(
+"LOAD CHAT ERROR:",
+result.error
+);
+
+box.innerHTML=
+'<div class="chatEmpty">'+
+'Gagal memuat chat.<br><br>'+
+escapeHTML(result.error.message)+
+'</div>';
+
+return;
+
+}
+
+const data=result.data;
+
+if(!data||!data.length){
+
+box.innerHTML=
+'<div class="chatEmpty">'+
+'Belum ada pesan.<br>'+
+'Jadilah yang pertama.'+
+'</div>';
+
+return;
+
+}
+
+box.innerHTML="";
+
+data.forEach(function(row){
+renderChatMessage(row,false);
+});
+
+}catch(error){
+
+console.error("CHAT LOAD ERROR:",error);
+
+box.innerHTML=
+'<div class="chatEmpty">'+
+'Gagal terhubung ke server chat.'+
+'</div>';
+
+}
+
+}
+
+/* ==========================================
+REALTIME
+========================================== */
+
+function subscribeChat(){
+
+if(chatChannel||!supabaseClient)return;
+
+try{
+
+chatChannel=
+supabaseClient
+.channel("murzz-global-chat")
+.on(
+"postgres_changes",
+{
+event:"INSERT",
+schema:"public",
+table:"global_chat"
+},
+function(payload){
+
+if(payload&&payload.new){
+
+renderChatMessage(
+payload.new,
+true
+);
+
+}
+
+}
+)
+.subscribe(function(status){
+
+console.log(
+"CHAT REALTIME:",
+status
+);
+
+});
+
+}catch(error){
+
+console.error(
+"REALTIME ERROR:",
+error
+);
+
+chatChannel=null;
+
+}
+
+}
+
+/* ==========================================
+SEND CHAT
+========================================== */
+
+async function sendChat(){
+
+if(!supabaseClient){
+
+setChatError(
+"Database chat belum tersedia."
+);
+
+toast("Chat belum terhubung");
+
+return;
+
+}
+
+const name=
+$("chatName").value.trim();
+
+const message=
+$("chatMessage").value.trim();
+
+setChatError("");
+
+const validation=
+moderateChat(name,message);
+
+if(validation){
+
+setChatError(validation);
+toast(validation);
+
+return;
+
+}
+
+const button=$("chatSend");
+
+button.disabled=true;
+button.textContent="KIRIM...";
+
+localStorage.setItem(
+"murzzChatName",
+name
+);
+
+try{
+
+const result=
+await supabaseClient
+.from("global_chat")
+.insert({
+name:name,
+message:message
+})
+.select("id,name,message,created_at")
+.single();
+
+button.disabled=false;
+button.textContent="KIRIM";
+
+if(result.error){
+
+console.error(
+"SUPABASE INSERT ERROR:",
+result.error
+);
+
+setChatError(
+"Pesan gagal dikirim: "+
+result.error.message
+);
+
+toast("Pesan gagal dikirim");
+
+return;
+
+}
+
+if(result.data){
+
+renderChatMessage(
+result.data,
+true
+);
+
+}
+
+lastChatSent=Date.now();
+
+$("chatMessage").value="";
+$("chatCount").textContent="0";
+
+setChatError("");
+
+toast("Pesan berhasil dikirim");
+
+}catch(error){
+
+button.disabled=false;
+button.textContent="KIRIM";
+
+console.error(
+"CHAT SEND ERROR:",
+error
+);
+
+setChatError(
+"Terjadi kesalahan saat mengirim pesan."
+);
+
+toast("Pesan gagal dikirim");
+
+}
+
+}
+
+/* ==========================================
+VIDEO
+========================================== */
+
+const localVideo=$("localVideo");
+
+if(localVideo){
+
+window.addEventListener(
+"load",
+function(){
+
+localVideo.muted=true;
+
+const playPromise=
+localVideo.play();
+
+if(playPromise&&typeof playPromise.catch==="function"){
+
+playPromise.catch(function(){
+console.log(
+"Autoplay diblokir browser."
+);
+});
+
+}
+
+}
+);
+
+}
+
+/* ==========================================
+PARTICLES
+========================================== */
+
+const canvas=$("fx");
+
+let ctx=null;
+
+if(canvas){
+ctx=canvas.getContext("2d");
+}
+
+let particles=[];
+
+function resizeCanvas(){
+
+if(!canvas||!ctx)return;
+
+const ratio=
+Math.min(window.devicePixelRatio||1,2);
+
+canvas.width=
+window.innerWidth*ratio;
+
+canvas.height=
+window.innerHeight*ratio;
+
+canvas.style.width=
+window.innerWidth+"px";
+
+canvas.style.height=
+window.innerHeight+"px";
+
+ctx.setTransform(
+ratio,
+0,
+0,
+ratio,
+0,
+0
+);
+
+}
+
+function createParticles(){
+
+particles=
+Array.from(
+{length:55},
+function(){
+
+return{
+x:Math.random()*window.innerWidth,
+y:Math.random()*window.innerHeight,
+r:Math.random()*1.5+.3,
+vx:(Math.random()-.5)*.25,
+vy:(Math.random()-.5)*.25,
+a:Math.random()*.45+.1
+};
+
+}
+);
+
+}
+
+function drawParticles(){
+
+if(!canvas||!ctx)return;
+
+ctx.clearRect(
+0,
+0,
+window.innerWidth,
+window.innerHeight
+);
+
+particles.forEach(function(p){
+
+p.x+=p.vx;
+p.y+=p.vy;
+
+if(p.x<0)p.x=window.innerWidth;
+if(p.x>window.innerWidth)p.x=0;
+
+if(p.y<0)p.y=window.innerHeight;
+if(p.y>window.innerHeight)p.y=0;
+
+ctx.beginPath();
+
+ctx.arc(
+p.x,
+p.y,
+p.r,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle=
+"rgba(184,76,255,"+p.a+")";
+
+ctx.fill();
+
+});
+
+requestAnimationFrame(drawParticles);
+
+}
+
+if(canvas&&ctx){
+
+resizeCanvas();
+createParticles();
+drawParticles();
+
+window.addEventListener(
+"resize",
+resizeCanvas
+);
+
+}
+
+/* ==========================================
+BUTTON EVENTS
+========================================== */
+
+$("loginBtn").addEventListener(
+"click",
+loginKey
+);
+
+$("buyBtn").addEventListener(
+"click",
+openBuy
+);
+
+$("infoBtn").addEventListener(
+"click",
+openInfo
+);
+
+$("logoutBtn").addEventListener(
+"click",
+logoutKey
+);
+
+$("chatFloat").addEventListener(
+"click",
+openGlobalChat
+);
+
+$("closeChatBtn").addEventListener(
+"click",
+closeGlobalChat
+);
+
+$("closeInfoBtn").addEventListener(
+"click",
+closeInfo
+);
+
+$("chatSend").addEventListener(
+"click",
+sendChat
+);
+
+$("chatMessage").addEventListener(
+"input",
+function(){
+
+$("chatCount").textContent=
+$("chatMessage").value.length;
+
+}
+);
+
+$("chatMessage").addEventListener(
+"keydown",
+function(event){
+
+if(event.key==="Enter"){
+
+event.preventDefault();
+
+sendChat();
+
+}
+
+}
+);
+
+/* ==========================================
+STARTUP
+========================================== */
+
+window.addEventListener(
+"load",
+function(){
+
+setTimeout(function(){
+
+$("loader").classList.add("hide");
+
+},1000);
+
+const role=
+localStorage.getItem("murzzRole");
+
+if(
+role==="OWNER"||
+role==="USER"
+){
+
+$("roleBadge").textContent=role;
+
+setTimeout(function(){
+openNoka();
+},1100);
+
+}
+
+}
+);
+
+/* ==========================================
+ESCAPE / MODAL CLICK
+========================================== */
+
+document.addEventListener(
+"keydown",
+function(event){
+
+if(event.key==="Escape"){
+
+closeInfo();
+closeGlobalChat();
+
+}
+
+}
+);
+
+$("globalChatModal").addEventListener(
+"click",
+function(event){
+
+if(event.target===this){
+closeGlobalChat();
+}
+
+}
+);
+
+$("infoModal").addEventListener(
+"click",
+function(event){
+
+if(event.target===this){
+closeInfo();
+}
+
+}
+);
+</script>
+
+</body>
+  </html>a
